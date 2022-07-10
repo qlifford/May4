@@ -3,7 +3,9 @@ package com.example.may4
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log.d
+import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +15,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
+import org.jetbrains.anko.appcompat.v7.toolbar
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.toolbar
 import org.jetbrains.anko.uiThread
 import java.net.URL
 
@@ -30,12 +34,13 @@ class MainActivity : AppCompatActivity() {
         navView = findViewById(R.id.navigationView)
         drawerLayout = findViewById(R.id.drawerLayout)
         recyclerView = findViewById(R.id.recyclerView)
+        progressBar = findViewById(R.id.progressBar)
 
 
         navView!!.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.actionAdmin -> {
-                   val intent = Intent(this,AdminActivity::class.java)
+                    val intent = Intent(this, AdminActivity::class.java)
                     startActivity(intent)
                 }
 
@@ -46,10 +51,10 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24)
-        }
+      //  supportActionBar?.apply {
+       //     setDisplayHomeAsUpEnabled(true)
+      //      setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24)
+    //    }
         doAsync {
             val json =
                 URL("https://gist.githubusercontent.com/qlifford/7ddc627dbfdd23c1c6e6beb2b2c1d107/raw/5ac29c8a43a9af7f7c3ffcfdb2b0308e8ea2cdf9/Firt.json").readText()
@@ -59,6 +64,7 @@ class MainActivity : AppCompatActivity() {
                 recyclerView?.apply {
                     layoutManager = GridLayoutManager(this@MainActivity, 2)
                     adapter = ProductsAdapter(products)
+                    progressBar?.visibility = View.GONE
                 }
             }
         }
@@ -66,6 +72,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         drawerLayout!!.openDrawer(GravityCompat.START)
+        return true
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_toolbar, menu)
         return true
     }
 
