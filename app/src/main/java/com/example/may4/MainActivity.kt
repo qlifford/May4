@@ -15,9 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
-import org.jetbrains.anko.appcompat.v7.toolbar
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.toolbar
 import org.jetbrains.anko.uiThread
 import java.net.URL
 
@@ -27,14 +25,17 @@ class MainActivity : AppCompatActivity() {
     var drawerLayout: DrawerLayout? = null
     var frameLayout: FrameLayout? = null
     var progressBar: ProgressBar? = null
+    var categoriesRecyclerView: RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+     //   setSupportActionBar(toolbar)
         setContentView(R.layout.activity_main)
         navView = findViewById(R.id.navigationView)
         drawerLayout = findViewById(R.id.drawerLayout)
         recyclerView = findViewById(R.id.recyclerView)
         progressBar = findViewById(R.id.progressBar)
+        categoriesRecyclerView = findViewById(R.id.categoriesRecyclerView)
 
 
         navView!!.setNavigationItemSelectedListener {
@@ -51,13 +52,26 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-      //  supportActionBar?.apply {
-       //     setDisplayHomeAsUpEnabled(true)
-      //      setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24)
-    //    }
-        doAsync {
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24)
+       }
+        val categories = listOf(
+            "shoes", "shoes", "shoes", "shoes", "shoes", "shoes",
+            "shoes", "shoes", "shoes", "shoes", "shoes", "shoes",
+            "shoes", "shoes", "shoes", "shoes", "shoes", "shoes",
+        )
+        categoriesRecyclerView!!.apply {
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(
+                this@MainActivity,
+                androidx.recyclerview.widget.RecyclerView.HORIZONTAL,
+                false)
+            adapter = CategoriesAdapter(categories)
+        }
+
+    doAsync {
             val json =
-                URL("https://gist.githubusercontent.com/qlifford/7ddc627dbfdd23c1c6e6beb2b2c1d107/raw/5ac29c8a43a9af7f7c3ffcfdb2b0308e8ea2cdf9/Firt.json").readText()
+                URL("https://gist.githubusercontent.com/qlifford/5a3321770422f849ee6ae9a0b5f63eec/raw/efb6c66e82e91d8af29b52db830289ee2f194ae8/myepl.json").readText()
             uiThread {
                 d("gg", "json: $json")
                 val products = Gson().fromJson(json, Array<Products>::class.java).toList()

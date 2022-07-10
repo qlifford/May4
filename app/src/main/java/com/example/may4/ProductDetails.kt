@@ -1,12 +1,13 @@
 package com.example.may4
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
-import com.squareup.picasso.Picasso
+import androidx.appcompat.app.AppCompatActivity
 
 class ProductDetails : AppCompatActivity() {
     var available: TextView? = null
+    var photo: ImageView? = null
 
     private var productName:TextView? = null
 
@@ -19,13 +20,16 @@ class ProductDetails : AppCompatActivity() {
 
 
         val title = intent.getStringExtra("title")
+        val photoUrl = intent.getStringExtra("photoUrl")
         productName!!.text = title
+     //   Picasso.get().load(photoUrl).into(photo)
+
 
         available!!.setOnClickListener {
             android.app.AlertDialog.Builder(this)
                 .setMessage("Hi, $title is Available!")
                 .setPositiveButton("OK"
-                ) { _, _ ->
+                ) { p0, p1 ->
                 }
                 .create()
                 .show()
