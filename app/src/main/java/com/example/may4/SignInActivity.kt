@@ -2,30 +2,36 @@ package com.example.may4
 
 import android.app.ProgressDialog
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PatternMatcher
 import android.text.TextUtils
 import android.util.Patterns
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
-import com.example.may4.databinding.ActivityLoginBinding
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 
-class LoginActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityLoginBinding
+class SignInActivity : AppCompatActivity() {
     private lateinit var actionBar: ActionBar
     private lateinit var progressDialog: ProgressDialog
     private lateinit var firebaseAuth: FirebaseAuth
     private var email = ""
     private var password = ""
+    private var tvMember : TextView? = null
+    private var edtPwd : EditText? = null
+    private var btnLogin : Button? = null
+    private var edtName : EditText? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_sign_in)
 
+        tvMember = findViewById(R.id.tvMember)
+        edtName = findViewById(R.id.edtName)
+        edtPwd = findViewById(R.id.edtPwd)
+        btnLogin = findViewById(R.id.btnLogin)
         actionBar = supportActionBar!!
         actionBar.title = "Login"
         actionBar.setDisplayShowHomeEnabled(true)
@@ -37,28 +43,26 @@ class LoginActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
         checkUser()
 
-        binding.tvMember.setOnClickListener{
-            startActivity(Intent(this,SignUpActivity::class.java))
+        tvMember!!.setOnClickListener{
+            val intent = Intent(this, SignUpActivity::class.java)
+            startActivity(intent)
             finish()
-
-
-
         }
-  binding.btnLogin.setOnClickListener {
+        btnLogin!!.setOnClickListener {
 
-      validateData()
-  }
+            validateData()
+        }
 
-}
+    }
     private fun validateData() {
-            email = binding.edtName.text.toString().trim()
-            password = binding.edtPwd.text.toString().trim()
+        email = edtName!!.text.toString().trim()
+        password = edtPwd!!.text.toString().trim()
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.edtName.error = "Invalid email"
+            edtName!!.error = "Invalid email"
 
         }else if (TextUtils.isEmpty(password)) {
-            binding.edtPwd.error = "Enter password"
+            edtPwd!!.error = "Enter password"
         }else{
             firebaseLogin()
         }
@@ -67,7 +71,7 @@ class LoginActivity : AppCompatActivity() {
         progressDialog.show()
         firebaseAuth.signInWithEmailAndPassword(email,password)
             .addOnSuccessListener {
-            progressDialog.dismiss()
+                progressDialog.dismiss()
                 val firebaseUser = firebaseAuth.currentUser
                 val email = firebaseUser!!.email
                 Toast.makeText(this, "logged in as $email",
@@ -75,7 +79,7 @@ class LoginActivity : AppCompatActivity() {
 
                 startActivity(Intent(this,MainActivity::class.java))
                 finish()
-        }
+            }
             .addOnFailureListener{ e->
                 progressDialog.dismiss()
                 Toast.makeText(this, "login failed! ${e.message}",
@@ -86,11 +90,9 @@ class LoginActivity : AppCompatActivity() {
     private fun checkUser() {
         val firebaseUser = firebaseAuth.currentUser
         if (firebaseUser != null) {
-            startActivity(Intent(this,LoginActivity::class.java))
+            startActivity(Intent(this,SignUpActivity::class.java))
             finish()
         }
     }
 
-    }
-
-
+}
