@@ -1,5 +1,6 @@
 package com.example.may4
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log.d
 import android.view.MenuItem
@@ -30,24 +31,14 @@ class MainActivity : AppCompatActivity() {
         drawerLayout = findViewById(R.id.drawerLayout)
         recyclerView = findViewById(R.id.recyclerView)
 
-        supportFragmentManager.beginTransaction().replace(R.id.frameLayout,
-            MainFragment())
-            .commit()
 
         navView!!.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.home -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.frameLayout,
-                            MainFragment())
-                             .commit()
+                R.id.actionAdmin -> {
+                   val intent = Intent(this,AdminActivity::class.java)
+                    startActivity(intent)
+                }
 
-                }
-                R.id.message -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.frameLayout, MessagesFragment())
-                        .commit()
-                }
             }
             it.isChecked = true
             drawerLayout!!.closeDrawers()
@@ -59,17 +50,20 @@ class MainActivity : AppCompatActivity() {
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24)
         }
-        val products = arrayListOf<Products>()
-        for (i in 0..1000) {
-            products.add(Products("Product #$i", "https://picsum.photos/200", price = 1.99))
+        doAsync {
+            val json =
+                URL("https://gist.githubusercontent.com/qlifford/7ddc627dbfdd23c1c6e6beb2b2c1d107/raw/5ac29c8a43a9af7f7c3ffcfdb2b0308e8ea2cdf9/Firt.json").readText()
+            uiThread {
+                d("gg", "json: $json")
+                val products = Gson().fromJson(json, Array<Products>::class.java).toList()
+                recyclerView?.apply {
+                    layoutManager = GridLayoutManager(this@MainActivity, 2)
+                    adapter = ProductsAdapter(products)
+                }
+            }
         }
-
-        recyclerView?.apply {
-            layoutManager = GridLayoutManager(this@MainActivity, 3)
-            adapter = ProductsAdapter(products)
-        }
-
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         drawerLayout!!.openDrawer(GravityCompat.START)
         return true

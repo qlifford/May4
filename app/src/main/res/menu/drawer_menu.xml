@@ -15,10 +15,10 @@
             app:showAsAction="never" />
 
         <item
-            android:id="@+id/message"
+            android:id="@+id/actionAdmin"
             android:orderInCategory="100"
             android:icon="@drawable/common_full_open_on_phone"
-            android:title="Messages"
+            android:title="Admin"
             app:showAsAction="never" />
 
     </group>
