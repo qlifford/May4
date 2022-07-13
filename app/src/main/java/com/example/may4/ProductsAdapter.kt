@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.may4
 
 import android.content.Intent
@@ -34,6 +36,7 @@ class ProductsAdapter(private val products: List<Products>) : RecyclerView.Adapt
         view.setOnClickListener {
             val intent = Intent(parent.context,ProductDetails::class.java)
             intent.putExtra("title",products[holder.adapterPosition].title)
+            intent.putExtra("photoUrl",products[holder.adapterPosition].photoUrl)
             parent.context.startActivity((intent))
         }
         return holder
